@@ -10,6 +10,7 @@ export default async function send ({ gas, gasPrices = DEFAULT_GAS_PRICE, memo =
 
   // broadcast transaction with signatures included
   var  body = createBroadcastBody(signedTx, `block`)
+  
   console.log('body')
   console.log(body)
   // body = "0x"+Buffer.from(body).toString('hex') 
@@ -48,6 +49,8 @@ export async function createSignedTransaction ({ gas, gasPrices = DEFAULT_GAS_PR
   console.log(signer)
   
   const stdTx = createStdTx({ gas, gasPrices, memo }, messages)
+  console.log('stdTx')
+  console.log(stdTx)
   const signMessage = createSignMessage(stdTx, { sequence, accountNumber, chainId })
   let signature, publicKey
   console.log(signMessage)
@@ -104,8 +107,7 @@ export function createStdTx ({ gas, gasPrices, memo }, messages) {
   const fees = gasPrices.map(({ amount, denom }) => ({ amount: String(Math.round(amount * gas)), denom }))
     .filter(({ amount }) => amount > 0)
   return {
-    type:"cosmos-sdk/StdTx",
-    value:{
+    
       msg: Array.isArray(messages) ? messages : [messages],
       fee: {
         amount: fees.length > 0 ? fees : [],
@@ -114,7 +116,7 @@ export function createStdTx ({ gas, gasPrices, memo }, messages) {
       signatures: null,
       memo
 
-    }
+    
     
   }
 }
@@ -130,7 +132,7 @@ function createBroadcastBody (signedTx, returnType = `sync`) {
 
 // adds the signature object to the tx
 function createSignedTransactionObject (tx, signature) {
-   tx.value.signatures=[signature]
+   tx.signatures=[signature]
   
   return tx;
   // return Object.assign({}, {

@@ -10,27 +10,32 @@ type StdSignMsg struct {
   Memo          string      `json:"memo"`
 }
 */
+
 export function createSignMessage (
   jsonTxH,
   { sequence, accountNumber, chainId }
 ) {
   // sign bytes need amount to be an array
-  var jsonTx = jsonTxH.value
+  var jsonTx = jsonTxH
   const fee = {
     amount: jsonTx.fee.amount || [],
     gas: jsonTx.fee.gas
   }
+  
 
-  return JSON.stringify(
+  var result = JSON.stringify(
     removeEmptyProperties({
+      account_number: accountNumber,
+      chain_id: chainId,
       fee,
       memo: jsonTx.memo,
       msgs: jsonTx.msg, // weird msg vs. msgs
-      sequence,
-      account_number: accountNumber,
-      chain_id: chainId
+      sequence
     })
   )
+  console.log('加密')
+  console.log(result)
+  return result;
 }
 
 export function createSignature (
@@ -41,8 +46,8 @@ export function createSignature (
 ) {
   return {
     signature: signature.toString(`base64`),
-    account_number: accountNumber,
-    sequence,
+    // account_number: accountNumber,
+    // sequence,
     pub_key: {
       type: `tendermint/PubKeySecp256k1`, // TODO: allow other keytypes
       value: publicKey.toString(`base64`)
@@ -51,6 +56,8 @@ export function createSignature (
 }
 
 export function removeEmptyProperties (jsonTx) {
+  return jsonTx;
+  
   if (Array.isArray(jsonTx)) {
     return jsonTx.map(removeEmptyProperties)
   }

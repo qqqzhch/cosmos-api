@@ -21,6 +21,9 @@ export default class Cosmos {
     this.get = {}
     this.accounts = {} // storing sequence numbers to not send two transactions with the same sequence number
     this.chainId = chainId
+    console.log('constructor')
+    console.log(cosmosRESTURL)
+    console.log(this.chainId)
 
     const getters = _Getters(cosmosRESTURL)
     Object.keys(getters).forEach(getter => {
@@ -52,13 +55,22 @@ export default class Cosmos {
     }
   }
 
-  async setChainId (chainId = this.chainId) {
-    if (!chainId) {
-      const { block_meta: { header: { chain_id: chainId } } } = await this.get.block('latest')
+  async setChainId (chainIdpra = this.chainId) {
+    if(chainIdpra==undefined){
+      chainIdpra = this.chainId;
     }
-    this.chainId = chainId
+    
+    if (!chainIdpra) {
+       var lastBlock=await this.get.block('latest');
+       console.log(lastBlock);
+      // const { block_meta: { header: { chain_id: chainId } } } = lastBlock
+      var chainId =lastBlock.block_meta.header.chain_id
+      this.chainId = chainId
+    }else{
+      this.chainId = chainIdpra
+    }
 
-    return chainId
+    return this.chainId
   }
 
   async getAccount (senderAddress) {

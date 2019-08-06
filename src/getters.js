@@ -27,7 +27,9 @@ export default function Getters (cosmosRESTURL) {
       return this.nodeVersion().then(() => true, () => false)
     },
 
-    nodeVersion: () => fetch(cosmosRESTURL + `/node_version`).then(res => res.text()),
+    nodeVersion: () => fetch(cosmosRESTURL + `/node_info`).then(res => res.json()),
+    nodeSyncing: () => fetch(cosmosRESTURL + `/syncing`).then(res => res.json()),
+    nodeBlocklatest: () => fetch(cosmosRESTURL + `/blocks/latest`).then(res => res.json()),
 
     // coins
     account: function (address) {
@@ -86,8 +88,8 @@ export default function Getters (cosmosRESTURL) {
       console.log(`/txs?transfer.recipient=${addr}`)
       console.log('*****************')
       return Promise.all([
-        get(`/txs?message.action=send&message.sender=${addr}`),
-        get(`/txs?transfer.recipient=${addr}`)
+        get(`/txs?sender=${addr}`),
+        get(`/txs?recipient=${addr}`)
       ]).then(([senderTxs, recipientTxs]) => [].concat(senderTxs, recipientTxs))
     },
     txsByHeight: function (height) {

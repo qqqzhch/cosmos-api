@@ -9,9 +9,9 @@ export function MsgSend (
   return {
     type: `cosmos-sdk/MsgSend`,
     value: {
+      amount: amounts.map(Coin),
       from_address: senderAddress,
-      to_address: toAddress,
-      amount: amounts.map(Coin)
+      to_address: toAddress
     }
   }
 }
@@ -149,6 +149,8 @@ function Coin ({ amount, denom }) {
   return ({
     amount: String(amount),
     denom
+    
+    
   })
 }
 
