@@ -153,6 +153,12 @@ function Coin ({ amount, denom }) {
     
   })
 }
+function CoinOtherStyle ({ amount, denom }) {
+  return ({
+    denom,
+    amount: String(amount)
+  })
+}
 
 export default {
   'MsgSend': MsgSend,

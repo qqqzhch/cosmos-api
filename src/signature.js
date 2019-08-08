@@ -16,6 +16,9 @@ export function createSignMessage (
   { sequence, accountNumber, chainId }
 ) {
   // sign bytes need amount to be an array
+  console.log('createSignMessage');
+  console.log(jsonTxH);
+
   var jsonTx = jsonTxH
   const fee = {
     amount: jsonTx.fee.amount || [],
@@ -29,7 +32,7 @@ export function createSignMessage (
       chain_id: chainId,
       fee,
       memo: jsonTx.memo,
-      msgs: jsonTx.msg, // weird msg vs. msgs
+      msgs:msgPositionFix(jsonTx.msg) , // weird msg vs. msgs
       sequence
     })
   )
@@ -76,4 +79,25 @@ export function removeEmptyProperties (jsonTx) {
       sorted[key] = removeEmptyProperties(jsonTx[key])
     })
   return sorted
+}
+
+function msgPositionFix(msg){
+  var newMsg=null;
+  
+    newMsg= Object.assign([],msg)
+    
+    newMsg.forEach((item)=>{
+      if(item.type=="cosmos-sdk/MsgDelegate"){
+        var oldvalue=item.value;
+        delete item.value
+        item.value={
+          amount:oldvalue.amount,
+          delegator_address:oldvalue.delegator_address,
+          validator_address:oldvalue.validator_address
+        }
+
+      }
+    })
+  
+   return newMsg;
 }
