@@ -46,9 +46,9 @@ export function MsgUndelegate (
   return {
     type: `cosmos-sdk/MsgUndelegate`,
     value: {
-      validator_address: validatorAddress,
+      amount: Coin({ amount, denom }),
       delegator_address: senderAddress,
-      amount: Coin({ amount, denom })
+      validator_address: validatorAddress
     }
   }
 }
@@ -145,6 +145,42 @@ export function MsgWithdrawDelegationReward (
   }
 }
 
+
+export function MsgAssetPledge (
+  senderAddress,
+  {
+    amounts, // [{ denom, amount }]
+    asset
+  }
+) {
+  return {
+    type: `lambda/MsgAssetPledge`,
+    value: {
+      address: senderAddress,
+      asset: Coin(asset) ,
+      token: Coin(amounts) 
+    }
+  }
+}
+
+export function MsgAssetDrop (
+  senderAddress,
+  {
+    amounts, // [{ denom, amount }]
+    asset
+  }
+) {
+  return {
+    type: `lambda/MsgAssetDrop`,
+    value: {
+      Asset: Coin(asset) ,
+      address: senderAddress,
+      coin: Coin(amounts) 
+    }
+  }
+}
+
+
 function Coin ({ amount, denom }) {
   return ({
     amount: String(amount),
@@ -168,5 +204,7 @@ export default {
   'MsgSubmitProposal': MsgSubmitProposal,
   'MsgVote': MsgVote,
   'MsgDeposit': MsgDeposit,
-  'MsgWithdrawDelegationReward': MsgWithdrawDelegationReward
+  'MsgWithdrawDelegationReward': MsgWithdrawDelegationReward,
+  'MsgAssetPledge':MsgAssetPledge,
+  'MsgAssetDrop':MsgAssetDrop
 }
