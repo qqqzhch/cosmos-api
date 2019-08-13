@@ -79,7 +79,8 @@ export default function Getters (cosmosRESTURL) {
         this.bankTxs(addr),
         this.governanceTxs(addr),
         this.distributionTxs(addr),
-        this.stakingTxs(addr)
+        this.stakingTxs(addr),
+        this.assets(addr)
       ]).then((txs) => [].concat(...txs))
     },
     bankTxs: function (addr) {
@@ -96,6 +97,13 @@ export default function Getters (cosmosRESTURL) {
       return get(`/txs?tx.height=${height}`)
     },
     tx: hash => get(`/txs/${hash}`),
+    assets:function(addr){
+      return Promise.all([
+        get(`/txs?action=asset-pledge&address=${addr}`),
+        get(`/txs?action=asset-drop&address=${addr}`)
+      ]).then(([pledgeTxs, dropTxs]) => [].concat(pledgeTxs, dropTxs))
+
+    },
 
     /* ============ STAKE ============ */
     stakingTxs: async function (address, valAddress) {

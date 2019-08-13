@@ -173,8 +173,8 @@ export function MsgAssetDrop (
   return {
     type: `lambda/MsgAssetDrop`,
     value: {
-      Asset: Coin(asset) ,
       address: senderAddress,
+      asset: Coin(asset) ,
       coin: Coin(amounts) 
     }
   }
