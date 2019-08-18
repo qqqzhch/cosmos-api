@@ -62,7 +62,7 @@ export default class Cosmos {
     
     if (!chainIdpra) {
        var lastBlock=await this.get.block('latest');
-       console.log(lastBlock);
+      //  console.log(lastBlock);
       // const { block_meta: { header: { chain_id: chainId } } } = lastBlock
       var chainId =lastBlock.block_meta.header.chain_id
       this.chainId = chainId

@@ -41,7 +41,7 @@ export default function Getters (cosmosRESTURL) {
       
       return get(`/auth/accounts/${address}`)
         .then(res => {
-          console.log(res);
+          
           // HACK, hope for: https://github.com/cosmos/cosmos-sdk/issues/3885
           let account = res.value || emptyAccount
           if (res.type === `auth/DelayedVestingAccount`) {
@@ -59,7 +59,7 @@ export default function Getters (cosmosRESTURL) {
             delete account.BaseAccount
             delete account.BaseVestingAccount
           }
-          console.log(account)
+          
           return account
         })
         .catch(err => {
@@ -84,10 +84,7 @@ export default function Getters (cosmosRESTURL) {
       ]).then((txs) => [].concat(...txs))
     },
     bankTxs: function (addr) {
-      console.log('*****************')
-      console.log(`/txs?message.action=send&message.sender=${addr}`)
-      console.log(`/txs?transfer.recipient=${addr}`)
-      console.log('*****************')
+      
       return Promise.all([
         get(`/txs?sender=${addr}`),
         get(`/txs?recipient=${addr}`)
@@ -139,6 +136,10 @@ export default function Getters (cosmosRESTURL) {
       console.log(`/staking/delegators/${addr}/delegations`)
       return get(`/staking/delegators/${addr}/delegations`)
     },
+    partnerDelegations: function (addr) {
+      console.log(`/staking/delegators/${addr}/partner_delegations`)
+      return get(`/staking/delegators/${addr}/partner_delegations`)
+    },
     undelegations: function (addr) {
       return get(
 
@@ -164,6 +165,17 @@ export default function Getters (cosmosRESTURL) {
     // Get information from a validator
     validator: function (addr) {
       return get(`/staking/validators/${addr}`)
+    },
+    partnervalidators: () => Promise.all([
+      get(`/staking/partner_validators?status=unbonding`),
+      get(`/staking/partner_validators?status=bonded`),
+      get(`/staking/partner_validators?status=unbonded`)
+    ]).then((validatorGroups) =>
+      [].concat(...validatorGroups)
+    ),
+    // Get information from a validator
+    partnervalidator: function (addr) {
+      return get(`/staking/partner_validators/${addr}`)
     },
 
     // Get the list of the validators in the latest validator set

@@ -22,15 +22,18 @@ export function MsgDelegate (
   {
     validatorAddress,
     amount,
-    denom
+    denom,
+    validatortype
   }
 ) {
   return {
-    type: `cosmos-sdk/MsgDelegate`,
+    type: `lambda/MsgDelegate`,
     value: {
-      delegator_address: senderAddress,
-      validator_address: validatorAddress,
-      amount: Coin({ amount, denom })
+        amount: Coin({ amount, denom }),
+        delegator_address: senderAddress,
+        validator_address: validatorAddress,
+        validator_type: validatortype
+      
     }
   }
 }
@@ -40,15 +43,17 @@ export function MsgUndelegate (
   {
     validatorAddress,
     amount,
-    denom
+    denom,
+    validatortype
   }
 ) {
   return {
-    type: `cosmos-sdk/MsgUndelegate`,
+    type: `lambda/MsgUndelegate`,
     value: {
       amount: Coin({ amount, denom }),
       delegator_address: senderAddress,
-      validator_address: validatorAddress
+      validator_address: validatorAddress,
+      validator_type: validatortype
     }
   }
 }
@@ -175,7 +180,7 @@ export function MsgAssetDrop (
     value: {
       address: senderAddress,
       asset: Coin(asset) ,
-      coin: Coin(amounts) 
+      token: Coin(amounts) 
     }
   }
 }

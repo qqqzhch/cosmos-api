@@ -14,19 +14,24 @@ export default async function simulate (
   const type = msg.type
   const path = {
     'cosmos-sdk/MsgSend': () => `/bank/accounts/${senderAddress}/transfers`,
-    'cosmos-sdk/MsgDelegate': () => `/staking/delegators/${senderAddress}/delegations`,
-    'cosmos-sdk/MsgUndelegate': () => `/staking/delegators/${senderAddress}/unbonding_delegations`,
+    'lambda/MsgDelegate': () => `/staking/delegators/${senderAddress}/delegations`,
+    'lambda/MsgUndelegate': () => `/staking/delegators/${senderAddress}/unbonding_delegations`,
     'cosmos-sdk/MsgBeginRedelegate': () => `/staking/delegators/${senderAddress}/redelegations`,
     'cosmos-sdk/MsgSubmitProposal': () => `/gov/proposals`,
     'cosmos-sdk/MsgVote': () => `/gov/proposals/${msg.value.proposal_id}/votes`,
     'cosmos-sdk/MsgDeposit': () => `/gov/proposals/${msg.value.proposal_id}/deposits`,
-    'cosmos-sdk/MsgWithdrawDelegationReward': () => `/distribution/delegators/${senderAddress}/rewards`
+    'cosmos-sdk/MsgWithdrawDelegationReward': () => `/distribution/delegators/${senderAddress}/rewards`,
+    'lambda/MsgAssetPledge': () => `/asset/pledge`,
+    'lambda/MsgAssetDrop': () => `/asset/drop`
   }[type]()
   const url = `${cosmosRESTURL}${path}`
 
   const tx = createRESTPOSTObject(senderAddress, chainId, { sequence, accountNumber, memo }, msg)
 
-  const { gas_estimate: gasEstimate } = await fetch(url, { method: `POST`, body: JSON.stringify(tx) }).then(res => res.json())
+  const   result= await fetch(url, { method: `POST`, body: JSON.stringify(tx) }).then(res => res.json())
+  var  { gas_estimate: gasEstimate } =result
+  console.log('gas_estimategas_estimate',gasEstimate,result)
+  console.log(JSON.stringify(tx));
   return Math.round(gasEstimate * GAS_ADJUSTMENT)
 }
 
