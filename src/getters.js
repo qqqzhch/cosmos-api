@@ -9,6 +9,7 @@ export default function Getters (cosmosRESTURL) {
   function get (path, tries = RETRIES) {
     while (tries) {
       try {
+        console.log('get url')
         console.log(cosmosRESTURL + path)
         return fetch(cosmosRESTURL + path).then(res => res.json())
       } catch (err) {
@@ -86,8 +87,8 @@ export default function Getters (cosmosRESTURL) {
     bankTxs: function (addr) {
       
       return Promise.all([
-        get(`/txs?sender=${addr}`),
-        get(`/txs?recipient=${addr}`)
+        get(`/txs?sender=${addr}&page=1000000`),
+        get(`/txs?recipient=${addr}&page=1000000`)
       ]).then(([senderTxs, recipientTxs]) => [].concat(senderTxs, recipientTxs))
     },
     txsByHeight: function (height) {
@@ -96,8 +97,8 @@ export default function Getters (cosmosRESTURL) {
     tx: hash => get(`/txs/${hash}`),
     assets:function(addr){
       return Promise.all([
-        get(`/txs?action=asset-pledge&address=${addr}`),
-        get(`/txs?action=asset-drop&address=${addr}`)
+        get(`/txs?action=asset-pledge&address=${addr}&page=1000000`),
+        get(`/txs?action=asset-drop&address=${addr}&page=1000000`)
       ]).then(([pledgeTxs, dropTxs]) => [].concat(pledgeTxs, dropTxs))
 
     },
@@ -106,13 +107,13 @@ export default function Getters (cosmosRESTURL) {
     stakingTxs: async function (address, valAddress) {
       return Promise.all([
         get(
-          `/txs?action=create_validator&destination-validator=${valAddress}`),
+          `/txs?action=create_validator&destination-validator=${valAddress}&page=1000000`),
         get(
-          `/txs?action=edit_validator&destination-validator=${valAddress}`),
-        get(`/txs?action=delegate&delegator=${address}`),
-        get(`/txs?action=begin_redelegate&delegator=${address}`),
-        get(`/txs?action=begin_unbonding&delegator=${address}`),
-        get(`/txs?action=unjail&source-validator=${valAddress}`)
+          `/txs?action=edit_validator&destination-validator=${valAddress}&page=1000000`),
+        get(`/txs?action=delegate&delegator=${address}&page=1000000`),
+        get(`/txs?action=begin_redelegate&delegator=${address}&page=1000000`),
+        get(`/txs?action=begin_unbonding&delegator=${address}&page=1000000`),
+        get(`/txs?action=unjail&source-validator=${valAddress}&page=1000000`)
       ]).then(([
         createValidatorTxs,
         editValidatorTxs,
@@ -235,9 +236,9 @@ export default function Getters (cosmosRESTURL) {
     govVotingParameters: () => get(`/gov/parameters/voting`),
     governanceTxs: async function (address) {
       return Promise.all([
-        get(`/txs?action=submit_proposal&proposer=${address}`),
-        get(`/txs?action=deposit&depositor=${address}`),
-        get(`/txs?action=vote&voter=${address}`)
+        get(`/txs?action=submit_proposal&proposer=${address}&page=1000000`),
+        get(`/txs?action=deposit&depositor=${address}&page=1000000`),
+        get(`/txs?action=vote&voter=${address}&page=1000000`)
       ]).then(([submitProposalTxs, depositTxs, voteTxs]) =>
         [].concat(submitProposalTxs, depositTxs, voteTxs)
       )
@@ -249,9 +250,9 @@ export default function Getters (cosmosRESTURL) {
     /* ============ Distribution ============ */
     distributionTxs: async function (address, valAddress) {
       return Promise.all([
-        get(`/txs?action=set_withdraw_address&delegator=${address}`),
-        get(`/txs?action=withdraw_delegator_reward&delegator=${address}`),
-        get(`/txs?action=withdraw_validator_rewards_all&source-validator=${valAddress}`)
+        get(`/txs?action=set_withdraw_address&delegator=${address}&page=1000000`),
+        get(`/txs?action=withdraw_delegator_reward&delegator=${address}&page=1000000`),
+        get(`/txs?action=withdraw_validator_rewards_all&source-validator=${valAddress}&page=1000000`)
       ]).then(([
         updateWithdrawAddressTxs,
         withdrawDelegationRewardsTxs,
